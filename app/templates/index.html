@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Docker Dashboard</title>
+</head>
+<body>
+    <h1>Docker Dashboard</h1>
+    <div id="container-list"></div>
+
+    <script>
+        async function fetchContainers() {
+            const response = await fetch('/containers');
+            const containers = await response.json();
+            const containerList = document.getElementById('container-list');
+            containerList.innerHTML = '';
+
+            containers.forEach(container => {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <h3>${container.name} (${container.status})</h3>
+                    <button onclick="startContainer('${container.id}')">Start</button>
+                    <button onclick="stopContainer('${container.id}')">Stop</button>
+                    <button onclick="removeContainer('${container.id}')">Remove</button>
+                `;
+                containerList.appendChild(div);
+            });
+        }
+
+        async function startContainer(id) {
+            await fetch(`/containers/start/${id}`, { method: 'POST' });
+            fetchContainers();
+        }
+
+        async function stopContainer(id) {
+            await fetch(`/containers/stop/${id}`, { method: 'POST' });
+            fetchContainers();
+        }
+
+        async function removeContainer(id) {
+            await fetch(`/containers/remove/${id}`, { method: 'DELETE' });
+            fetchContainers();
+        }
+
+        // Fetch containers on page load
+        window.onload = fetchContainers;
+    </script>
+</body>
+</html>

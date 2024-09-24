@@ -1,4 +1,4 @@
-# Docker Dashboard Tutorial
+# Docker Dashboard
 
 This program was written with the intent of helping folks get up and running
 with docker containers and is designed to work with Docker Desktop.  
